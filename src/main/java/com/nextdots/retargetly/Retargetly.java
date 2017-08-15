@@ -129,7 +129,7 @@ public class Retargetly implements Application.ActivityLifecycleCallbacks {
         String model          = Build.MODEL;
         String idiome         = Locale.getDefault().getLanguage();
 
-        apiController.callEvent(new Event(ApiConstanst.EVENT_OPEN, value , uid, application.getPackageName(), pid, manufacturer, model, idiome));
+        apiController.callEvent(new Event(ApiConstanst.EVENT_CUSTOM, value , uid, application.getPackageName(), pid, manufacturer, model, idiome));
     }
 
 }
