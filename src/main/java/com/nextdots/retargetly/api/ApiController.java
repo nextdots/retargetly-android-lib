@@ -1,5 +1,6 @@
 package com.nextdots.retargetly.api;
 
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.nextdots.retargetly.models.Event;
@@ -14,8 +15,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ApiController {
 
-    Retrofit retrofit;
-    ApiService service;
+    private ApiService service;
 
     public ApiController(){
 
@@ -24,7 +24,7 @@ public class ApiController {
         OkHttpClient client = new OkHttpClient.Builder().addInterceptor(interceptor).build();
 
 
-        retrofit = new Retrofit.Builder()
+        Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("https://api.retargetly.com/")
                 .client(client)
                 .addConverterFactory(GsonConverterFactory.create())
@@ -36,13 +36,13 @@ public class ApiController {
     public void callEvent(Event event){
         service.callEvent(event).enqueue(new Callback<Void>() {
             @Override
-            public void onResponse(Call<Void> call, Response<Void> response) {
-                Log.d("-->","Todo bon");
+            public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {
+                Log.d(ApiConstanst.LOG_TAG,response.code()+"");
             }
 
             @Override
-            public void onFailure(Call<Void> call, Throwable t) {
-                Log.d("-->","Todo mal");
+            public void onFailure(@NonNull Call<Void> call, @NonNull Throwable t) {
+                Log.e(ApiConstanst.LOG_TAG,t.getMessage());
             }
         });
     }

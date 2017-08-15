@@ -2,14 +2,15 @@ package com.nextdots.retargetly.models;
 
 public class Event {
 
-    String et;
-    String value;
-    String uid;
-    String app;
-    int pid;
-    String mf;
-    String device;
-    String lan;
+    private String et;
+    private String value;
+    private String uid;
+    private String app;
+    private String mf;
+    private String device;
+    private String lan;
+
+    private int pid;
 
     public Event(String et, String uid, String app, int pid, String mf, String device, String lan){
         this.et  = et;

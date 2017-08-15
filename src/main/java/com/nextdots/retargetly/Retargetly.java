@@ -8,34 +8,37 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.widget.Toast;
-
 import com.nextdots.retargetly.api.ApiConstanst;
 import com.nextdots.retargetly.api.ApiController;
 import com.nextdots.retargetly.models.Event;
 
+import java.util.Locale;
+
 
 public class Retargetly implements Application.ActivityLifecycleCallbacks {
 
-    Application application = null;
+    private Application application = null;
 
-    boolean isFirst = false;
+    private boolean isFirst = false;
 
-    int pid;
+    private int pid;
 
-    String uid;
-    String manufacturer;
-    String model;
+    private String uid;
+    private String manufacturer;
+    private String model;
+    private String idiome;
 
-    ApiController apiController;
+    private ApiController apiController;
 
     public Retargetly(Application application, String uid, int pid){
         this.application = application;
-        manufacturer = Build.MANUFACTURER;
-        model = Build.MODEL;
-        this.uid = uid;
-        this.pid = pid;
+        manufacturer   = Build.MANUFACTURER;
+        model          = Build.MODEL;
+        idiome         = Locale.getDefault().getLanguage();
+        this.uid       = uid;
+        this.pid       = pid;
         this.application.registerActivityLifecycleCallbacks(this);
-        apiController = new ApiController();
+        apiController  = new ApiController();
     }
 
     @Override
@@ -52,11 +55,11 @@ public class Retargetly implements Application.ActivityLifecycleCallbacks {
     public void onActivityResumed(Activity activity) {
         if(!isFirst){
             isFirst = true;
-            Event event = new Event(ApiConstanst.EVENT_OPEN, uid, application.getPackageName(), pid, manufacturer, model, "ES");
+            Event event = new Event(ApiConstanst.EVENT_OPEN, uid, application.getPackageName(), pid, manufacturer, model, idiome);
             apiController.callEvent(event);
             Toast.makeText(application,"Primer Activity: "+activity.getClass().getSimpleName(),Toast.LENGTH_SHORT).show();
         }else{
-            Event event = new Event(ApiConstanst.EVENT_CHANGE, activity.getClass().getSimpleName(), uid, application.getPackageName(), pid, manufacturer, model, "ES");
+            Event event = new Event(ApiConstanst.EVENT_CHANGE, activity.getClass().getSimpleName(), uid, application.getPackageName(), pid, manufacturer, model, idiome);
             apiController.callEvent(event);
             Toast.makeText(application,"Activity: "+activity.getClass().getSimpleName(),Toast.LENGTH_SHORT).show();
         }
@@ -69,7 +72,7 @@ public class Retargetly implements Application.ActivityLifecycleCallbacks {
                 public void onFragmentResumed(FragmentManager fm, Fragment f) {
                     super.onFragmentResumed(fm, f);
                     Toast.makeText(application,"Fragmento: "+f.getClass().getSimpleName(),Toast.LENGTH_SHORT).show();
-                    Event event = new Event(ApiConstanst.EVENT_CHANGE, f.getClass().getSimpleName(), uid, application.getPackageName(), pid, manufacturer, model, "ES");
+                    Event event = new Event(ApiConstanst.EVENT_CHANGE, f.getClass().getSimpleName(), uid, application.getPackageName(), pid, manufacturer, model, idiome);
                     apiController.callEvent(event);
                 }
             },false);
@@ -81,7 +84,7 @@ public class Retargetly implements Application.ActivityLifecycleCallbacks {
                 public void onFragmentResumed(android.app.FragmentManager fm, android.app.Fragment f) {
                     super.onFragmentResumed(fm, f);
                     Toast.makeText(application,"Fragmento: "+f.getClass().getSimpleName(),Toast.LENGTH_SHORT).show();
-                    Event event = new Event(ApiConstanst.EVENT_CHANGE, f.getClass().getSimpleName(), uid, application.getPackageName(), pid, manufacturer, model, "ES");
+                    Event event = new Event(ApiConstanst.EVENT_CHANGE, f.getClass().getSimpleName(), uid, application.getPackageName(), pid, manufacturer, model, idiome);
                     apiController.callEvent(event);
                 }
             },false);
@@ -107,4 +110,17 @@ public class Retargetly implements Application.ActivityLifecycleCallbacks {
     public void onActivityDestroyed(Activity activity) {
 
     }
+
+
+    public static void callEventCustom(Application application, String value, String uid, int pid){
+        ApiController apiController  = new ApiController();
+
+        String manufacturer   = Build.MANUFACTURER;
+        String model          = Build.MODEL;
+        String idiome         = Locale.getDefault().getLanguage();
+
+        Event event = new Event(ApiConstanst.EVENT_OPEN, value , uid, application.getPackageName(), pid, manufacturer, model, idiome);
+        apiController.callEvent(event);
+    }
+
 }
