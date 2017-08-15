@@ -28,7 +28,7 @@ public class Retargetly implements Application.ActivityLifecycleCallbacks {
 
     ApiController apiController;
 
-    public void Retargetly(Application application, String uid, int pid){
+    public Retargetly(Application application, String uid, int pid){
         this.application = application;
         manufacturer = Build.MANUFACTURER;
         model = Build.MODEL;
