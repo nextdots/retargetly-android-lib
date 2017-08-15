@@ -53,42 +53,52 @@ public class Retargetly implements Application.ActivityLifecycleCallbacks {
 
     @Override
     public void onActivityResumed(Activity activity) {
+
         if(!isFirst){
+
             isFirst = true;
-            Event event = new Event(ApiConstanst.EVENT_OPEN, uid, application.getPackageName(), pid, manufacturer, model, idiome);
-            apiController.callEvent(event);
+            apiController.callEvent(new Event(ApiConstanst.EVENT_OPEN, uid, application.getPackageName(), pid, manufacturer, model, idiome));
             Toast.makeText(application,"Primer Activity: "+activity.getClass().getSimpleName(),Toast.LENGTH_SHORT).show();
+
         }else{
-            Event event = new Event(ApiConstanst.EVENT_CHANGE, activity.getClass().getSimpleName(), uid, application.getPackageName(), pid, manufacturer, model, idiome);
-            apiController.callEvent(event);
+
+            apiController.callEvent(new Event(ApiConstanst.EVENT_CHANGE, activity.getClass().getSimpleName(), uid, application.getPackageName(), pid, manufacturer, model, idiome));
             Toast.makeText(application,"Activity: "+activity.getClass().getSimpleName(),Toast.LENGTH_SHORT).show();
+
         }
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+
             FragmentManager fm = ((FragmentActivity)activity).getSupportFragmentManager();
 
             fm.registerFragmentLifecycleCallbacks(new FragmentManager.FragmentLifecycleCallbacks() {
                 @Override
                 public void onFragmentResumed(FragmentManager fm, Fragment f) {
+
                     super.onFragmentResumed(fm, f);
                     Toast.makeText(application,"Fragmento: "+f.getClass().getSimpleName(),Toast.LENGTH_SHORT).show();
-                    Event event = new Event(ApiConstanst.EVENT_CHANGE, f.getClass().getSimpleName(), uid, application.getPackageName(), pid, manufacturer, model, idiome);
-                    apiController.callEvent(event);
+                    apiController.callEvent(new Event(ApiConstanst.EVENT_CHANGE, f.getClass().getSimpleName(), uid, application.getPackageName(), pid, manufacturer, model, idiome));
+
                 }
             },false);
+
         }else{
+
             android.app.FragmentManager fm = activity.getFragmentManager();
 
             fm.registerFragmentLifecycleCallbacks(new android.app.FragmentManager.FragmentLifecycleCallbacks() {
                 @Override
                 public void onFragmentResumed(android.app.FragmentManager fm, android.app.Fragment f) {
+
                     super.onFragmentResumed(fm, f);
                     Toast.makeText(application,"Fragmento: "+f.getClass().getSimpleName(),Toast.LENGTH_SHORT).show();
-                    Event event = new Event(ApiConstanst.EVENT_CHANGE, f.getClass().getSimpleName(), uid, application.getPackageName(), pid, manufacturer, model, idiome);
-                    apiController.callEvent(event);
+                    apiController.callEvent(new Event(ApiConstanst.EVENT_CHANGE, f.getClass().getSimpleName(), uid, application.getPackageName(), pid, manufacturer, model, idiome));
+
                 }
             },false);
+
         }
+
     }
 
     @Override
@@ -119,8 +129,7 @@ public class Retargetly implements Application.ActivityLifecycleCallbacks {
         String model          = Build.MODEL;
         String idiome         = Locale.getDefault().getLanguage();
 
-        Event event = new Event(ApiConstanst.EVENT_OPEN, value , uid, application.getPackageName(), pid, manufacturer, model, idiome);
-        apiController.callEvent(event);
+        apiController.callEvent(new Event(ApiConstanst.EVENT_OPEN, value , uid, application.getPackageName(), pid, manufacturer, model, idiome));
     }
 
 }
