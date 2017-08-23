@@ -31,11 +31,15 @@ public class ApiController {
         callEvent(event,customEventListener);
     }
 
-    private void callEvent(Event event,final CustomEventListener customEventListener){
+    private void callEvent(final Event event,final CustomEventListener customEventListener){
         service.callEvent(event).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {
-                Log.d(ApiConstanst.TAG,response.code()+"");
+                if(event.getEt() != ApiConstanst.EVENT_OPEN)
+                    Log.d(ApiConstanst.TAG,"Event : "+event.getEt() + ", value:" + event.getValue() + ", status: " + response.code());
+                else
+                    Log.d(ApiConstanst.TAG,"Event : "+event.getEt() + ", status: " + response.code());
+
                 if(customEventListener != null)
                     customEventListener.customEventSuccess();
             }

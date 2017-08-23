@@ -13,16 +13,6 @@ public class Event {
 
     private int pid;
 
-    public Event(String et, String uid, String app, int pid, String mf, String device, String lan){
-        this.et  = et;
-        this.uid = uid;
-        this.app = app;
-        this.pid = pid;
-        this.mf = mf;
-        this.device = device;
-        this.lan = lan;
-    }
-
     public Event(String et, String uid, String app, int pid, String mf, String device, String lan, String apps){
         this.et  = et;
         this.uid = uid;
@@ -43,5 +33,13 @@ public class Event {
         this.mf = mf;
         this.device = device;
         this.lan = lan;
+    }
+
+    public String getEt() {
+        return et;
+    }
+
+    public String getValue() {
+        return value;
     }
 }
