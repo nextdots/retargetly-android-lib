@@ -32,6 +32,8 @@ public class Retargetly implements Application.ActivityLifecycleCallbacks {
     private String model;
     private String idiome;
 
+    private Activity currentActivity;
+
     private ApiController apiController;
 
     public static void init(Application application, String uid, int pid){
@@ -61,52 +63,53 @@ public class Retargetly implements Application.ActivityLifecycleCallbacks {
 
     @Override
     public void onActivityResumed(Activity activity) {
+        if(currentActivity != activity) {
+            currentActivity = activity;
+            if (!isFirst) {
 
-        if(!isFirst){
+                isFirst = true;
+                apiController.callCustomEvent(new Event(ApiConstanst.EVENT_OPEN, uid, application.getPackageName(), pid, manufacturer, model, idiome, RetargetlyUtils.getInstalledApps(application)));
+                Log.d(TAG, "First Activity " + activity.getClass().getSimpleName());
 
-            isFirst = true;
-            apiController.callCustomEvent(new Event(ApiConstanst.EVENT_OPEN, uid, application.getPackageName(), pid, manufacturer, model, idiome, RetargetlyUtils.getInstalledApps(application)));
-            Log.d(TAG,"First Activity "+activity.getClass().getSimpleName());
+            } else {
 
-        }else{
+                apiController.callCustomEvent(new Event(ApiConstanst.EVENT_CHANGE, activity.getClass().getSimpleName(), uid, application.getPackageName(), pid, manufacturer, model, idiome));
+                Log.d(TAG, "Activity " + activity.getClass().getSimpleName());
 
-            apiController.callCustomEvent(new Event(ApiConstanst.EVENT_CHANGE, activity.getClass().getSimpleName(), uid, application.getPackageName(), pid, manufacturer, model, idiome));
-            Log.d(TAG,"Activity "+activity.getClass().getSimpleName());
+            }
 
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+
+                FragmentManager fm = ((FragmentActivity) activity).getSupportFragmentManager();
+
+                fm.registerFragmentLifecycleCallbacks(new FragmentManager.FragmentLifecycleCallbacks() {
+                    @Override
+                    public void onFragmentResumed(FragmentManager fm, Fragment f) {
+
+                        super.onFragmentResumed(fm, f);
+                        Log.d(TAG, "Fragment: " + f.getClass().getSimpleName());
+                        apiController.callCustomEvent(new Event(ApiConstanst.EVENT_CHANGE, f.getClass().getSimpleName(), uid, application.getPackageName(), pid, manufacturer, model, idiome));
+
+                    }
+                }, false);
+
+            } else {
+
+                android.app.FragmentManager fm = activity.getFragmentManager();
+
+                fm.registerFragmentLifecycleCallbacks(new android.app.FragmentManager.FragmentLifecycleCallbacks() {
+                    @Override
+                    public void onFragmentResumed(android.app.FragmentManager fm, android.app.Fragment f) {
+
+                        super.onFragmentResumed(fm, f);
+                        Log.d(TAG, "Fragment: " + f.getClass().getSimpleName());
+                        apiController.callCustomEvent(new Event(ApiConstanst.EVENT_CHANGE, f.getClass().getSimpleName(), uid, application.getPackageName(), pid, manufacturer, model, idiome));
+
+                    }
+                }, false);
+
+            }
         }
-
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-
-            FragmentManager fm = ((FragmentActivity)activity).getSupportFragmentManager();
-
-            fm.registerFragmentLifecycleCallbacks(new FragmentManager.FragmentLifecycleCallbacks() {
-                @Override
-                public void onFragmentResumed(FragmentManager fm, Fragment f) {
-
-                    super.onFragmentResumed(fm, f);
-                    Log.d(TAG, "Fragment: "+f.getClass().getSimpleName());
-                    apiController.callCustomEvent(new Event(ApiConstanst.EVENT_CHANGE, f.getClass().getSimpleName(), uid, application.getPackageName(), pid, manufacturer, model, idiome));
-
-                }
-            },false);
-
-        }else{
-
-            android.app.FragmentManager fm = activity.getFragmentManager();
-
-            fm.registerFragmentLifecycleCallbacks(new android.app.FragmentManager.FragmentLifecycleCallbacks() {
-                @Override
-                public void onFragmentResumed(android.app.FragmentManager fm, android.app.Fragment f) {
-
-                    super.onFragmentResumed(fm, f);
-                    Log.d(TAG, "Fragment: "+f.getClass().getSimpleName());
-                    apiController.callCustomEvent(new Event(ApiConstanst.EVENT_CHANGE, f.getClass().getSimpleName(), uid, application.getPackageName(), pid, manufacturer, model, idiome));
-
-                }
-            },false);
-
-        }
-
     }
 
     @Override
