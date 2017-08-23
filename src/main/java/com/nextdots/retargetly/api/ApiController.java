@@ -2,12 +2,8 @@ package com.nextdots.retargetly.api;
 
 import android.support.annotation.NonNull;
 import android.util.Log;
-
 import com.nextdots.retargetly.data.listeners.CustomEventListener;
 import com.nextdots.retargetly.data.models.Event;
-
-import okhttp3.OkHttpClient;
-import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -19,15 +15,8 @@ public class ApiController {
     private ApiService service;
 
     public ApiController(){
-
-        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
-        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-        OkHttpClient client = new OkHttpClient.Builder().addInterceptor(interceptor).build();
-
-
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("https://api.retargetly.com/")
-                .client(client)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 

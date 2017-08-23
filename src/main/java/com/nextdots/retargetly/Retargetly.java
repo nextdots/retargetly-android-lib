@@ -65,12 +65,12 @@ public class Retargetly implements Application.ActivityLifecycleCallbacks {
         if(!isFirst){
 
             isFirst = true;
-            apiController.callEvent(new Event(ApiConstanst.EVENT_OPEN, uid, application.getPackageName(), pid, manufacturer, model, idiome, RetargetlyUtils.getInstalledApps(application)));
+            apiController.callCustomEvent(new Event(ApiConstanst.EVENT_OPEN, uid, application.getPackageName(), pid, manufacturer, model, idiome, RetargetlyUtils.getInstalledApps(application)));
             Log.d(TAG,"First Activity "+activity.getClass().getSimpleName());
 
         }else{
 
-            apiController.callEvent(new Event(ApiConstanst.EVENT_CHANGE, activity.getClass().getSimpleName(), uid, application.getPackageName(), pid, manufacturer, model, idiome));
+            apiController.callCustomEvent(new Event(ApiConstanst.EVENT_CHANGE, activity.getClass().getSimpleName(), uid, application.getPackageName(), pid, manufacturer, model, idiome));
             Log.d(TAG,"Activity "+activity.getClass().getSimpleName());
 
         }
@@ -85,7 +85,7 @@ public class Retargetly implements Application.ActivityLifecycleCallbacks {
 
                     super.onFragmentResumed(fm, f);
                     Log.d(TAG, "Fragment: "+f.getClass().getSimpleName());
-                    apiController.callEvent(new Event(ApiConstanst.EVENT_CHANGE, f.getClass().getSimpleName(), uid, application.getPackageName(), pid, manufacturer, model, idiome));
+                    apiController.callCustomEvent(new Event(ApiConstanst.EVENT_CHANGE, f.getClass().getSimpleName(), uid, application.getPackageName(), pid, manufacturer, model, idiome));
 
                 }
             },false);
@@ -100,7 +100,7 @@ public class Retargetly implements Application.ActivityLifecycleCallbacks {
 
                     super.onFragmentResumed(fm, f);
                     Log.d(TAG, "Fragment: "+f.getClass().getSimpleName());
-                    apiController.callEvent(new Event(ApiConstanst.EVENT_CHANGE, f.getClass().getSimpleName(), uid, application.getPackageName(), pid, manufacturer, model, idiome));
+                    apiController.callCustomEvent(new Event(ApiConstanst.EVENT_CHANGE, f.getClass().getSimpleName(), uid, application.getPackageName(), pid, manufacturer, model, idiome));
 
                 }
             },false);
