@@ -1,6 +1,6 @@
 package com.nextdots.retargetly.api;
 
-import com.nextdots.retargetly.models.Event;
+import com.nextdots.retargetly.data.models.Event;
 
 import retrofit2.Call;
 import retrofit2.http.Body;

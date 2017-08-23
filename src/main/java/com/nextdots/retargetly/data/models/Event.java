@@ -1,4 +1,4 @@
-package com.nextdots.retargetly.models;
+package com.nextdots.retargetly.data.models;
 
 public class Event {
 
@@ -9,6 +9,7 @@ public class Event {
     private String mf;
     private String device;
     private String lan;
+    private String apps;
 
     private int pid;
 
@@ -20,6 +21,17 @@ public class Event {
         this.mf = mf;
         this.device = device;
         this.lan = lan;
+    }
+
+    public Event(String et, String uid, String app, int pid, String mf, String device, String lan, String apps){
+        this.et  = et;
+        this.uid = uid;
+        this.app = app;
+        this.pid = pid;
+        this.mf = mf;
+        this.device = device;
+        this.lan = lan;
+        this.apps = apps;
     }
 
     public Event(String et, String value, String uid, String app, int pid, String mf, String device, String lan){

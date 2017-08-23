@@ -3,7 +3,8 @@ package com.nextdots.retargetly.api;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.nextdots.retargetly.models.Event;
+import com.nextdots.retargetly.data.listeners.CustomEventListener;
+import com.nextdots.retargetly.data.models.Event;
 
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -33,16 +34,28 @@ public class ApiController {
         service = retrofit.create(ApiService.class);
     }
 
-    public void callEvent(Event event){
+    public void callCustomEvent(Event event){
+        callEvent(event,null);
+    }
+
+    public void callCustomEvent(Event event,final CustomEventListener customEventListener){
+        callEvent(event,customEventListener);
+    }
+
+    private void callEvent(Event event,final CustomEventListener customEventListener){
         service.callEvent(event).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {
-                Log.d(ApiConstanst.LOG_TAG,response.code()+"");
+                Log.d(ApiConstanst.TAG,response.code()+"");
+                if(customEventListener != null)
+                    customEventListener.customEventSuccess();
             }
 
             @Override
             public void onFailure(@NonNull Call<Void> call, @NonNull Throwable t) {
-                Log.e(ApiConstanst.LOG_TAG,t.getMessage());
+                Log.e(ApiConstanst.TAG,t.getMessage());
+                if(customEventListener != null)
+                    customEventListener.customEventFailure(t.getMessage());
             }
         });
     }

@@ -7,12 +7,16 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.util.Log;
 import android.widget.Toast;
 import com.nextdots.retargetly.api.ApiConstanst;
 import com.nextdots.retargetly.api.ApiController;
-import com.nextdots.retargetly.models.Event;
+import com.nextdots.retargetly.data.models.Event;
+import com.nextdots.retargetly.utils.RetargetlyUtils;
 
 import java.util.Locale;
+
+import static com.nextdots.retargetly.api.ApiConstanst.TAG;
 
 
 public class Retargetly implements Application.ActivityLifecycleCallbacks {
@@ -31,7 +35,7 @@ public class Retargetly implements Application.ActivityLifecycleCallbacks {
     private ApiController apiController;
 
     public static void init(Application application, String uid, int pid){
-        Retargetly retargetly = new Retargetly(application,uid,pid);
+        new Retargetly(application,uid,pid);
     }
 
     private Retargetly(Application application, String uid, int pid){
@@ -61,13 +65,13 @@ public class Retargetly implements Application.ActivityLifecycleCallbacks {
         if(!isFirst){
 
             isFirst = true;
-            apiController.callEvent(new Event(ApiConstanst.EVENT_OPEN, uid, application.getPackageName(), pid, manufacturer, model, idiome));
-            Toast.makeText(application,"Primer Activity: "+activity.getClass().getSimpleName(),Toast.LENGTH_SHORT).show();
+            apiController.callEvent(new Event(ApiConstanst.EVENT_OPEN, uid, application.getPackageName(), pid, manufacturer, model, idiome, RetargetlyUtils.getInstalledApps(application)));
+            Log.d(TAG,"First Activity "+activity.getClass().getSimpleName());
 
         }else{
 
             apiController.callEvent(new Event(ApiConstanst.EVENT_CHANGE, activity.getClass().getSimpleName(), uid, application.getPackageName(), pid, manufacturer, model, idiome));
-            Toast.makeText(application,"Activity: "+activity.getClass().getSimpleName(),Toast.LENGTH_SHORT).show();
+            Log.d(TAG,"Activity "+activity.getClass().getSimpleName());
 
         }
 
@@ -80,7 +84,7 @@ public class Retargetly implements Application.ActivityLifecycleCallbacks {
                 public void onFragmentResumed(FragmentManager fm, Fragment f) {
 
                     super.onFragmentResumed(fm, f);
-                    Toast.makeText(application,"Fragmento: "+f.getClass().getSimpleName(),Toast.LENGTH_SHORT).show();
+                    Log.d(TAG, "Fragment: "+f.getClass().getSimpleName());
                     apiController.callEvent(new Event(ApiConstanst.EVENT_CHANGE, f.getClass().getSimpleName(), uid, application.getPackageName(), pid, manufacturer, model, idiome));
 
                 }
@@ -95,7 +99,7 @@ public class Retargetly implements Application.ActivityLifecycleCallbacks {
                 public void onFragmentResumed(android.app.FragmentManager fm, android.app.Fragment f) {
 
                     super.onFragmentResumed(fm, f);
-                    Toast.makeText(application,"Fragmento: "+f.getClass().getSimpleName(),Toast.LENGTH_SHORT).show();
+                    Log.d(TAG, "Fragment: "+f.getClass().getSimpleName());
                     apiController.callEvent(new Event(ApiConstanst.EVENT_CHANGE, f.getClass().getSimpleName(), uid, application.getPackageName(), pid, manufacturer, model, idiome));
 
                 }
@@ -123,17 +127,6 @@ public class Retargetly implements Application.ActivityLifecycleCallbacks {
     @Override
     public void onActivityDestroyed(Activity activity) {
 
-    }
-
-
-    public static void callEventCustom(Application application, String value, String uid, int pid){
-        ApiController apiController  = new ApiController();
-
-        String manufacturer   = Build.MANUFACTURER;
-        String model          = Build.MODEL;
-        String idiome         = Locale.getDefault().getLanguage();
-
-        apiController.callEvent(new Event(ApiConstanst.EVENT_CUSTOM, value , uid, application.getPackageName(), pid, manufacturer, model, idiome));
     }
 
 }
