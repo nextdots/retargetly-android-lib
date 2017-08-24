@@ -63,21 +63,21 @@ public class Retargetly implements Application.ActivityLifecycleCallbacks {
 
     @Override
     public void onActivityResumed(Activity activity) {
+        if (!isFirst) {
+
+            isFirst = true;
+            apiController.callCustomEvent(new Event(ApiConstanst.EVENT_OPEN, uid, application.getPackageName(), pid, manufacturer, model, idiome, RetargetlyUtils.getInstalledApps(application)));
+            Log.d(TAG, "First Activity " + activity.getClass().getSimpleName());
+
+        } else {
+
+            apiController.callCustomEvent(new Event(ApiConstanst.EVENT_CHANGE, activity.getClass().getSimpleName(), uid, application.getPackageName(), pid, manufacturer, model, idiome));
+            Log.d(TAG, "Activity " + activity.getClass().getSimpleName());
+
+        }
+
         if(currentActivity != activity) {
             currentActivity = activity;
-            if (!isFirst) {
-
-                isFirst = true;
-                apiController.callCustomEvent(new Event(ApiConstanst.EVENT_OPEN, uid, application.getPackageName(), pid, manufacturer, model, idiome, RetargetlyUtils.getInstalledApps(application)));
-                Log.d(TAG, "First Activity " + activity.getClass().getSimpleName());
-
-            } else {
-
-                apiController.callCustomEvent(new Event(ApiConstanst.EVENT_CHANGE, activity.getClass().getSimpleName(), uid, application.getPackageName(), pid, manufacturer, model, idiome));
-                Log.d(TAG, "Activity " + activity.getClass().getSimpleName());
-
-            }
-
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
 
                 FragmentManager fm = ((FragmentActivity) activity).getSupportFragmentManager();
