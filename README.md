@@ -56,7 +56,7 @@ dependencies {
 
 ## Usage
 
-You must create a class that extends of application and in the oncreate adds the following line
+You must create a class that extends of application and in the oncreate add the following line
 
 ```Retargetly.init(this,uid,pid);```
 
