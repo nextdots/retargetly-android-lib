@@ -182,3 +182,15 @@ D/Retargetly -: Event : custom, value:Test Custom Event, status: 200
 //Failure
 D/Retargetly -: Event : custom, 500
 ```
+
+## Built With
+
+* [Android Studio](https://developer.android.com/) - Programming language
+
+## Versioning
+
+We use [GitHub](https://github.com/) for versioning. For the versions available, see the [tags on this repository](https://github.com/nextdots/retargetly-android-lib.git).
+
+## Authors
+
+* [**Luis Tundisi**](mailto:luistundisi@gmail.com) - [NextDots](http://nextdots.com/)
