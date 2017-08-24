@@ -50,7 +50,7 @@ Add the dependency
 
 ```gradle
 dependencies {
-  compile 'com.github.User:Repo:Tag'
+  compile 'com.github.nextdots:retargetly-android-lib:1.0.+'
 }
 ```
 
@@ -89,7 +89,7 @@ RetargetlyUtils.callCustomEvent(Application application, String value, String ui
 RetargetlyUtils.callCustomEvent(Application application, String value, String uid, int pid, CustomEventListener customEventListener);
 ```
 
-#### response
+#### Response
 
 ```java
 public interface CustomEventListener {
@@ -98,7 +98,7 @@ public interface CustomEventListener {
 }
 ```
 
-## Custom Events Example
+### Custom Events Example
 
 #### Custom event without response
 
@@ -136,4 +136,49 @@ public class MainActivity extends AppCompatActivity implements CustomEventListen
         Toast.makeText(getApplication(),msg,Toast.LENGTH_SHORT).show();
     }
 }
+```
+
+#### Util getInstalledApps
+
+```java
+String result = RetargetlyUtils.getInstalledApps(getApplication());
+
+// result -> "Amazon, Trello, Toggle, Facebook, ...."
+```
+
+## Logs
+
+### First Activity
+
+```xml
+D/Retargetly -: First Activity MainActivity
+
+//Success
+D/Retargetly -: Event : open, status: 200
+
+//Failure
+D/Retargetly -: Event : open, 500
+```
+
+### Change Activity or Fragment
+
+```xml
+D/Retargetly -: Activity MainActivity
+D/Retargetly -: Fragment MainFragment
+
+//Success
+D/Retargetly -: Event : change, value:MainActivity, status: 200
+
+//Failure
+D/Retargetly -: Event : change, 500
+```
+
+### Custom Event
+
+```xml
+//Success
+D/Retargetly -: Event : custom, value:Test Custom Event, status: 200
+
+//Failure
+D/Retargetly -: Event : custom, 500
 ```
