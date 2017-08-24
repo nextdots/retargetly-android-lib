@@ -76,65 +76,64 @@ public class App extends Application {
 }
 ```
 
+### Custom Event
 
-# Retargetly-android-lib
-
-Libreria diseñada para enviar las estadisticas de cambios de vistas entre actividades y fragmentos.
-
-# Instalacion
-
-### Step 1. 
-
-Añadir el repositorio JitPack en tu archivo build.gradle
-
-```xml
-allprojects {
-  repositories {
-    ...
-    maven { url 'https://jitpack.io' }
-  }
-}
-```
-### Step 2 
-
-Añadir la dependencia
-
-```xml
-dependencies {
-  compile 'com.github.nextdots:retargetly-android-lib:1.0.+'
-}
-```
-
-## Usage
-
-You must create a class that extends of application and in the oncreate adds the following line
-
-```Retargetly.init(this,uid,pid);```
-
-### Example
+#### Custom event without response
 
 ```java
-public class App extends Application {
+RetargetlyUtils.callCustomEvent(Application application, String value, String uid, int pid);
+```
+#### Custom event with response
+
+```java
+RetargetlyUtils.callCustomEvent(Application application, String value, String uid, int pid, CustomEventListener customEventListener);
+```
+
+#### response
+
+```java
+public interface CustomEventListener {
+    void customEventSuccess();
+    void customEventFailure(String msg);
+}
+```
+
+## Custom Events Example
+
+#### Custom event without response
+
+```java
+
+String uid = "TESTUID15654";
+int pid    = 123456;
+
+RetargetlyUtils.callCustomEvent(getApplication(),"Custom Event",uid,pid);
+
+```
+
+#### Custom event with response
+
+```java
+public class MainActivity extends AppCompatActivity implements CustomEventListener {
 
     String uid = "TESTUID15654";
     int pid    = 123456;
     
     @Override
-    public void onCreate() {
-        super.onCreate();
-        Retargetly.init(this,uid,pid);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        RetargetlyUtils.callCustomEvent(getApplication(),"Custom Event", uid, pid,this); 
+    }
+    
+    @Override
+    public void customEventSuccess() {
+        Toast.makeText(getApplication(),"Custom event send",Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void customEventFailure(String msg) {
+        Toast.makeText(getApplication(),msg,Toast.LENGTH_SHORT).show();
     }
 }
-```
-
-In the maninfest file add the ``android:name=".app"`` attribute in the application
-
-### Example
-
-```xml
-<application
-  android:name=".App"
-  android:allowBackup="true"
-  android:icon="@mipmap/ic_launcher"
-  android:label="@string/app_name">
 ```
