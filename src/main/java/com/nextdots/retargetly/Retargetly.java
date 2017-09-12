@@ -95,7 +95,7 @@ public class Retargetly implements Application.ActivityLifecycleCallbacks {
         }
 
         if(forceGPS)
-            RetargetlyUtils.checkPermissionGps(currentActivity);
+            RetargetlyUtils.checkPermissionGps(activity);
 
         if(currentActivity != activity) {
 
