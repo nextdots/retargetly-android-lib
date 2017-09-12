@@ -32,6 +32,8 @@ public class Retargetly implements Application.ActivityLifecycleCallbacks {
     private String model;
     private String idiome;
 
+    private boolean forceGPS = false;
+
     private Activity currentActivity;
 
     private ApiController apiController;
@@ -63,6 +65,7 @@ public class Retargetly implements Application.ActivityLifecycleCallbacks {
         this.uid       = uid;
         this.pid       = pid;
         this.application.registerActivityLifecycleCallbacks(this);
+        this.forceGPS = forceGPS;
         apiController  = new ApiController();
     }
 
@@ -92,8 +95,12 @@ public class Retargetly implements Application.ActivityLifecycleCallbacks {
         }
 
         if(currentActivity != activity) {
+
             currentActivity = activity;
-            RetargetlyUtils.checkPermissionGps(currentActivity);
+
+            if(forceGPS)
+                RetargetlyUtils.checkPermissionGps(currentActivity);
+
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
 
                 FragmentManager fm = ((FragmentActivity) activity).getSupportFragmentManager();
