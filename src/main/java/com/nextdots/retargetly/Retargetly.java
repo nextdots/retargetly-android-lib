@@ -21,13 +21,13 @@ import static com.nextdots.retargetly.api.ApiConstanst.TAG;
 
 public class Retargetly implements Application.ActivityLifecycleCallbacks {
 
-    private Application application = null;
+    static public Application application = null;
 
     private boolean isFirst = false;
 
-    private int pid;
+    static public String pid;
+    static public String uid;
 
-    private String uid;
     private String manufacturer;
     private String model;
     private String idiome;
@@ -36,15 +36,30 @@ public class Retargetly implements Application.ActivityLifecycleCallbacks {
 
     private ApiController apiController;
 
-    public static void init(Application application, String uid, int pid){
+    public static void init(Application application, String uid, String pid){
         new Retargetly(application,uid,pid);
     }
 
-    private Retargetly(Application application, String uid, int pid){
+    public static void init(Application application, String uid, String pid, boolean forceGPS){
+        new Retargetly(application,uid,pid,forceGPS);
+    }
+
+    private Retargetly(Application application, String uid, String pid){
         this.application = application;
-        manufacturer   = Build.MANUFACTURER;
-        model          = Build.MODEL;
-        idiome         = Locale.getDefault().getLanguage();
+        this.manufacturer   = Build.MANUFACTURER;
+        this.model          = Build.MODEL;
+        this.idiome         = Locale.getDefault().getLanguage();
+        this.uid       = uid;
+        this.pid       = pid;
+        this.application.registerActivityLifecycleCallbacks(this);
+        apiController  = new ApiController();
+    }
+
+    private Retargetly(Application application, String uid, String pid, boolean forceGPS){
+        this.application = application;
+        this.manufacturer   = Build.MANUFACTURER;
+        this.model          = Build.MODEL;
+        this.idiome         = Locale.getDefault().getLanguage();
         this.uid       = uid;
         this.pid       = pid;
         this.application.registerActivityLifecycleCallbacks(this);
@@ -66,7 +81,7 @@ public class Retargetly implements Application.ActivityLifecycleCallbacks {
         if (!isFirst) {
 
             isFirst = true;
-            apiController.callCustomEvent(new Event(ApiConstanst.EVENT_OPEN, uid, application.getPackageName(), pid, manufacturer, model, idiome, RetargetlyUtils.getInstalledApps(application)));
+            apiController.callCustomEvent(new Event(uid, application.getPackageName(), pid, manufacturer, model, idiome, RetargetlyUtils.getInstalledApps(application)));
             Log.d(TAG, "First Activity " + activity.getClass().getSimpleName());
 
         } else {
@@ -78,6 +93,7 @@ public class Retargetly implements Application.ActivityLifecycleCallbacks {
 
         if(currentActivity != activity) {
             currentActivity = activity;
+            RetargetlyUtils.checkPermissionGps(currentActivity);
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
 
                 FragmentManager fm = ((FragmentActivity) activity).getSupportFragmentManager();

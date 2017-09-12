@@ -1,5 +1,7 @@
 package com.nextdots.retargetly.data.models;
 
+import com.nextdots.retargetly.api.ApiConstanst;
+
 public class Event {
 
     private String et;
@@ -10,11 +12,10 @@ public class Event {
     private String device;
     private String lan;
     private String apps;
+    private String pid;
 
-    private int pid;
-
-    public Event(String et, String uid, String app, int pid, String mf, String device, String lan, String apps){
-        this.et  = et;
+    public Event(String uid, String app, String pid, String mf, String device, String lan, String apps){
+        this.et  = ApiConstanst.EVENT_OPEN;
         this.uid = uid;
         this.app = app;
         this.pid = pid;
@@ -24,7 +25,7 @@ public class Event {
         this.apps = apps;
     }
 
-    public Event(String et, String value, String uid, String app, int pid, String mf, String device, String lan){
+    public Event(String et, String value, String uid, String app, String pid, String mf, String device, String lan){
         this.et  = et;
         this.value = value;
         this.uid = uid;
