@@ -94,12 +94,12 @@ public class Retargetly implements Application.ActivityLifecycleCallbacks {
 
         }
 
+        if(forceGPS)
+            RetargetlyUtils.checkPermissionGps(currentActivity);
+
         if(currentActivity != activity) {
 
             currentActivity = activity;
-
-            if(forceGPS)
-                RetargetlyUtils.checkPermissionGps(currentActivity);
 
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
 
