@@ -43,7 +43,6 @@ public class GPSBroadCastReceiver extends BroadcastReceiver implements LocationL
     }
 
     private void setMostRecentLocation(Location lastKnownLocation) {
-        Log.d(TAG, "Altitude "+lastKnownLocation.getAltitude()+"");
         Log.d(TAG, "latitude "+lastKnownLocation.getLatitude()+"");
         Log.d(TAG, "longitude "+lastKnownLocation.getLongitude()+"");
     }
