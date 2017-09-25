@@ -12,6 +12,7 @@ import android.widget.Toast;
 import com.nextdots.retargetly.api.ApiConstanst;
 import com.nextdots.retargetly.api.ApiController;
 import com.nextdots.retargetly.data.models.Event;
+import com.nextdots.retargetly.utils.DialogGpsUtils;
 import com.nextdots.retargetly.utils.RetargetlyUtils;
 
 import java.util.Locale;
@@ -137,12 +138,12 @@ public class Retargetly implements Application.ActivityLifecycleCallbacks {
 
     @Override
     public void onActivityPaused(Activity activity) {
-
+        DialogGpsUtils.closeDialogSettings();
     }
 
     @Override
     public void onActivityStopped(Activity activity) {
-
+        DialogGpsUtils.closeDialogSettings();
     }
 
     @Override
@@ -152,7 +153,7 @@ public class Retargetly implements Application.ActivityLifecycleCallbacks {
 
     @Override
     public void onActivityDestroyed(Activity activity) {
-
+        DialogGpsUtils.closeDialogSettings();
     }
 
 }

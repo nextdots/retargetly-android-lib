@@ -70,26 +70,13 @@ public class RetargetlyUtils {
         }
     }
 
-    public static void openDialogSettings(final Activity activity){
-        new AlertDialog.Builder(activity)
-                .setMessage(activity.getResources().getString(R.string.alert_location))
-                .setCancelable(false)
-                .setPositiveButton(activity.getResources().getString(android.R.string.ok), new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        Intent callGPSSettingIntent = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                        activity.startActivity(callGPSSettingIntent);
-                    }
-                }).show();
-    }
-
-
     public static void checkPermissionGps(Activity activity){
         if (ContextCompat.checkSelfPermission(activity,
                 Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
                 && ContextCompat.checkSelfPermission(activity,
                 Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             if (!hasLocationEnabled(activity)) {
-                openDialogSettings(activity);
+                DialogGpsUtils.openDialogSettings(activity);
             }
         } else {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
