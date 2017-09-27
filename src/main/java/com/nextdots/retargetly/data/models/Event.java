@@ -65,10 +65,6 @@ public class Event {
     }
 
     public String getValue() {
-        if(value.named != null)
-            return value.named;
-        if(rPosition != null)
-            return rPosition;
-        return "";
+        return this.value != null ? this.value.named : (this.rPosition != null ? this.rPosition : "");
     }
 }
