@@ -65,9 +65,9 @@ public class Event {
     }
 
     public String getValue() {
-        if(!value.named.isEmpty())
+        if(value.named != null)
             return value.named;
-        if(!rPosition.isEmpty())
+        if(rPosition != null)
             return rPosition;
         return "";
     }

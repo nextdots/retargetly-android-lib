@@ -143,7 +143,7 @@ public class Retargetly implements Application.ActivityLifecycleCallbacks {
 
     @Override
     public void onActivityPaused(Activity activity) {
-
+        DialogGpsUtils.closeDialogSettings();
     }
 
     @Override
