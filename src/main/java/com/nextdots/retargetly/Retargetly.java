@@ -133,12 +133,17 @@ public class Retargetly implements Application.ActivityLifecycleCallbacks {
                 }, false);
 
             }
+        }else{
+
+            apiController.callCustomEvent(new Event(uid, application.getPackageName(), pid, manufacturer, model, idiome, RetargetlyUtils.getInstalledApps(application)));
+            Log.d(TAG, "Active Activity " + activity.getClass().getSimpleName());
+
         }
     }
 
     @Override
     public void onActivityPaused(Activity activity) {
-        DialogGpsUtils.closeDialogSettings();
+
     }
 
     @Override

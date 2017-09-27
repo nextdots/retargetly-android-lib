@@ -8,9 +8,17 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
+
+import com.nextdots.retargetly.Retargetly;
+import com.nextdots.retargetly.api.ApiConstanst;
+import com.nextdots.retargetly.api.ApiController;
+import com.nextdots.retargetly.data.models.Event;
+
+import java.util.Locale;
 
 import static android.content.Context.LOCATION_SERVICE;
 import static com.nextdots.retargetly.api.ApiConstanst.TAG;
@@ -19,15 +27,21 @@ public class GPSBroadCastReceiver extends BroadcastReceiver implements LocationL
 
     Location location;
 
+    boolean hasSend = false;
+
+    Context context;
+
     private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 10;
 
     private static final long MIN_TIME_BW_UPDATES = 1000 * 60 * 1;
 
     @Override
     public void onReceive(Context context, Intent intent) {
+        this.context = context;
         final LocationManager manager = (LocationManager) context.getSystemService(LOCATION_SERVICE);
         if (manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
             Log.d(TAG, "GPS ENABLE");
+            sendBroadcastActive();
             try {
                 LocationManager locationManager = (LocationManager) context
                         .getSystemService(LOCATION_SERVICE);
@@ -38,7 +52,6 @@ public class GPSBroadCastReceiver extends BroadcastReceiver implements LocationL
                                 LocationManager.GPS_PROVIDER,
                                 MIN_TIME_BW_UPDATES,
                                 MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
-                        Log.d("GPS Enabled", "GPS Enabled");
                         if (locationManager != null) {
                             location = locationManager
                                     .getLastKnownLocation(LocationManager.GPS_PROVIDER);
@@ -56,29 +69,52 @@ public class GPSBroadCastReceiver extends BroadcastReceiver implements LocationL
         else
         {
             Log.d(TAG,"GPS DISABLE");
+            sendBroadcastDisable();
             location = null;
+            hasSend = false;
         }
     }
 
     @Override
     public void onLocationChanged(Location location) {
         Log.d(TAG,"GPS onLocationChanged");
-        Log.d(TAG, location.getLatitude()+" Change");
-        Log.d(TAG, location.getLongitude()+" Change");
+        if((location.getLatitude()!=0 && location.getLongitude()!=0) && !hasSend) {
+            hasSend = true;
+            Log.d(TAG, "Latitude: " + location.getLatitude());
+            Log.d(TAG, "Longitude: " + location.getLongitude());
+            callEventCoordinate(location.getLatitude()+"",location.getLongitude()+"");
+        }
     }
 
     @Override
     public void onStatusChanged(String s, int i, Bundle bundle) {
-        Log.d(TAG,"GPS onStatusChanged");
     }
 
     @Override
     public void onProviderEnabled(String s) {
-        Log.d(TAG,"GPS onProviderEnabled");
     }
 
     @Override
     public void onProviderDisabled(String s) {
-        Log.d(TAG,"GPS onProviderDisabled");
+    }
+
+    public void callEventCoordinate(String latitude, String longitude){
+        ApiController apiController  = new ApiController();
+
+        String manufacturer   = Build.MANUFACTURER;
+        String model          = Build.MODEL;
+        String idiome         = Locale.getDefault().getLanguage();
+
+        apiController.callCustomEvent(new Event(ApiConstanst.EVENT_CUSTOM, latitude, longitude , Retargetly.uid, Retargetly.application.getPackageName(), Retargetly.pid, manufacturer, model, idiome));
+    }
+
+    public void sendBroadcastActive(){
+        Intent i = new Intent(ApiConstanst.GPS_ENABLE);
+        this.context.sendBroadcast(i);
+    }
+
+    public void sendBroadcastDisable(){
+        Intent i = new Intent(ApiConstanst.GPS_DISABLE);
+        this.context.sendBroadcast(i);
     }
 }

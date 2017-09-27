@@ -2,19 +2,13 @@ package com.nextdots.retargetly.utils;
 
 import android.Manifest;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Application;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.location.LocationManager;
 import android.os.Build;
 import android.support.v4.content.ContextCompat;
-import android.widget.Toast;
-
-import com.nextdots.retargetly.R;
 import com.nextdots.retargetly.Retargetly;
 import com.nextdots.retargetly.api.ApiConstanst;
 import com.nextdots.retargetly.api.ApiController;
@@ -31,6 +25,24 @@ public class RetargetlyUtils {
 
     public static void callCustomEvent(String value, CustomEventListener customEventListener){
         callEvent(value,customEventListener);
+    }
+
+    public static void callCustomEvent(Object value){
+        callEvent(value,null);
+    }
+
+    public static void callCustomEvent(Object value, CustomEventListener customEventListener){
+        callEvent(value,customEventListener);
+    }
+
+    private static void callEvent(Object value, CustomEventListener customEventListener){
+        ApiController apiController  = new ApiController();
+
+        String manufacturer   = Build.MANUFACTURER;
+        String model          = Build.MODEL;
+        String idiome         = Locale.getDefault().getLanguage();
+
+        apiController.callCustomEvent(new Event(ApiConstanst.EVENT_CUSTOM, value , Retargetly.uid, Retargetly.application.getPackageName(), Retargetly.pid, manufacturer, model, idiome),customEventListener);
     }
 
     private static void callEvent(String value, CustomEventListener customEventListener){
