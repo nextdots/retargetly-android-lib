@@ -35,6 +35,16 @@ public class RetargetlyUtils {
         callEvent(value,customEventListener);
     }
 
+    public static void callEventCoordinate(String latitude, String longitude){
+        ApiController apiController  = new ApiController();
+
+        String manufacturer   = Build.MANUFACTURER;
+        String model          = Build.MODEL;
+        String idiome         = Locale.getDefault().getLanguage();
+
+        apiController.callCustomEvent(new Event(ApiConstanst.EVENT_CUSTOM, latitude, longitude , Retargetly.uid, Retargetly.application.getPackageName(), Retargetly.pid, manufacturer, model, idiome));
+    }
+
     private static void callEvent(Object value, CustomEventListener customEventListener){
         ApiController apiController  = new ApiController();
 

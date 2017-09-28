@@ -1,9 +1,15 @@
 package com.nextdots.retargetly;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.Application;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -17,14 +23,16 @@ import com.nextdots.retargetly.utils.RetargetlyUtils;
 
 import java.util.Locale;
 
+import static android.content.Context.LOCATION_SERVICE;
 import static com.nextdots.retargetly.api.ApiConstanst.TAG;
 
 
-public class Retargetly implements Application.ActivityLifecycleCallbacks {
+public class Retargetly implements Application.ActivityLifecycleCallbacks, LocationListener {
 
     static public Application application = null;
 
     private boolean isFirst = false;
+    private boolean hasSendCoordinate = false;
 
     static public String pid;
     static public String uid;
@@ -98,6 +106,9 @@ public class Retargetly implements Application.ActivityLifecycleCallbacks {
         if(forceGPS)
             RetargetlyUtils.checkPermissionGps(activity);
 
+        if(!hasSendCoordinate)
+            callCoordinateGps(activity);
+
         if(currentActivity != activity) {
 
             currentActivity = activity;
@@ -161,4 +172,49 @@ public class Retargetly implements Application.ActivityLifecycleCallbacks {
         DialogGpsUtils.closeDialogSettings();
     }
 
+    private void callCoordinateGps(Activity activity){
+        long MIN_DISTANCE_CHANGE_FOR_UPDATES = 10;
+
+        long MIN_TIME_BW_UPDATES = 1000 * 60 * 1;
+
+        LocationManager manager = (LocationManager) activity.getSystemService(LOCATION_SERVICE);
+        if (manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            try {
+                LocationManager locationManager = (LocationManager) activity
+                        .getSystemService(LOCATION_SERVICE);
+
+                if (ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                    locationManager.requestLocationUpdates(
+                            LocationManager.GPS_PROVIDER,
+                            MIN_TIME_BW_UPDATES,
+                            MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
+                }
+            }catch (Exception e){
+
+            }
+        }
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        Log.d(TAG,"GPS onLocationChanged");
+        if((location.getLatitude()!=0 && location.getLongitude()!=0) && !hasSendCoordinate) {
+            hasSendCoordinate = true;
+            Log.d(TAG, "Latitude: " + location.getLatitude());
+            Log.d(TAG, "Longitude: " + location.getLongitude());
+            RetargetlyUtils.callEventCoordinate(location.getLatitude()+"",location.getLongitude()+"");
+        }
+    }
+
+    @Override
+    public void onStatusChanged(String s, int i, Bundle bundle) {
+    }
+
+    @Override
+    public void onProviderEnabled(String s) {
+    }
+
+    @Override
+    public void onProviderDisabled(String s) {
+    }
 }
