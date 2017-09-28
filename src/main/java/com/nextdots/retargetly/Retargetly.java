@@ -160,6 +160,7 @@ public class Retargetly implements Application.ActivityLifecycleCallbacks, Locat
     @Override
     public void onActivityStopped(Activity activity) {
         DialogGpsUtils.closeDialogSettings();
+        hasSendCoordinate = false;
     }
 
     @Override
@@ -170,6 +171,7 @@ public class Retargetly implements Application.ActivityLifecycleCallbacks, Locat
     @Override
     public void onActivityDestroyed(Activity activity) {
         DialogGpsUtils.closeDialogSettings();
+        hasSendCoordinate = false;
     }
 
     private void callCoordinateGps(Activity activity){
