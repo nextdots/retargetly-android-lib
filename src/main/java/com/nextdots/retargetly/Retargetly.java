@@ -97,6 +97,7 @@ public class Retargetly implements Application.ActivityLifecycleCallbacks, Locat
             isFirst = true;
             apiController.callCustomEvent(new Event(sid, application.getPackageName(), pid, manufacturer, model, idiome, RetargetlyUtils.getInstalledApps(application)));
             Log.d(TAG, "First Activity " + activity.getClass().getSimpleName());
+            RetargetlyUtils.checkPermissionGps(activity);
 
         } else {
 
@@ -104,9 +105,6 @@ public class Retargetly implements Application.ActivityLifecycleCallbacks, Locat
             Log.d(TAG, "Activity " + activity.getClass().getSimpleName());
 
         }
-
-        if(forceGPS)
-            RetargetlyUtils.checkPermissionGps(activity);
 
         if(!hasSendCoordinate)
             callCoordinateGps(activity);
